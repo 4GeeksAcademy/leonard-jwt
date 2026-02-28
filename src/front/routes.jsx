@@ -1,30 +1,68 @@
-// Import necessary components and functions from react-router-dom.
-
+// Import React Router components for creating and configuring routes
 import {
-    createBrowserRouter,
-    createRoutesFromElements,
-    Route,
+  createBrowserRouter,  // Creates a router instance for browser-based routing
+  createRoutesFromElements,  // Converts JSX route definitions into route objects
+  Route,  // Component to define individual routes
 } from "react-router-dom";
-import { Layout } from "./pages/Layout";
-import { Home } from "./pages/Home";
-import { Single } from "./pages/Single";
-import { Demo } from "./pages/Demo";
 
+// Import page components that represent different pages/views in the application
+import { Layout } from "./pages/Layout";  // Main layout wrapper with header/footer
+import { Home } from "./pages/Home";  // Home page component
+import { Single } from "./pages/Single";  // Single item detail page component
+import { Demo } from "./pages/Demo";  // Demo page component
+import { Login } from "./pages/Login";  // Login/authentication page component
+import { Signup } from "./pages/Signup";  // User registration/signup page component
+import { Private } from "./pages/Private";  // Protected/private page (requires authentication)
+import ProtectedRoute from ".//components/ProtectedRoute";  // Component that protects routes with authentication
+
+// Create and export the router instance with all route definitions
 export const router = createBrowserRouter(
-    createRoutesFromElements(
-    // CreateRoutesFromElements function allows you to build route elements declaratively.
-    // Create your routes here, if you want to keep the Navbar and Footer in all views, add your new routes inside the containing Route.
-    // Root, on the contrary, create a sister Route, if you have doubts, try it!
-    // Note: keep in mind that errorElement will be the default page when you don't get a route, customize that page to make your project more attractive.
-    // Note: The child paths of the Layout element replace the Outlet component with the elements contained in the "element" attribute of these child paths.
+  // Create routes from JSX Route elements
+  createRoutesFromElements(
+    // Root route (/) with Layout component as the main wrapper for all pages
+    // The Layout component persists across all route changes
+    <Route path="/" element={<Layout />} errorElement={<h1>Not found!</h1>}>
 
-      // Root Route: All navigation will start from here.
-      <Route path="/" element={<Layout />} errorElement={<h1>Not found!</h1>} >
+      {/* Index route - renders Home component when path is exactly "/" */}
+      <Route index element={<Home />} />
 
-        {/* Nested Routes: Defines sub-routes within the BaseHome component. */}
-        <Route path= "/" element={<Home />} />
-        <Route path="/single/:theId" element={ <Single />} />  {/* Dynamic route for single items */}
-        <Route path="/demo" element={<Demo />} />
-      </Route>
-    )
+      {/* Route for viewing a single item with dynamic ID parameter (:theId) */}
+      {/* URL pattern: /single/123, /single/abc, etc. */}
+      <Route path="/single/:theId" element={<Single />} />
+
+      {/* Route for demo page - showcases application features */}
+      <Route path="/demo" element={<Demo />} />
+
+      {/* Route for user login page - public route */}
+      <Route path="/login" element={<Login />} />
+
+      {/* Route for user registration/signup page - public route */}
+      <Route path="/signup" element={<Signup />} />
+
+      {/* Protected route that requires JWT authentication */}
+      {/* Wrapped with ProtectedRoute component that checks for valid token */}
+      <Route
+        path="/private"
+        element={
+          // ProtectedRoute checks if user has valid JWT token in sessionStorage
+          // Redirects to /login if token doesn't exist
+          <ProtectedRoute>
+            <Private />
+          </ProtectedRoute>
+        }
+      />
+    </Route>
+  )
 );
+
+
+
+
+
+
+
+
+
+
+
+
