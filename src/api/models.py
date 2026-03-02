@@ -27,3 +27,30 @@ class User(db.Model):
 
     # Active flag expected by existing migrations/schema
     is_active = db.Column(db.Boolean(), nullable=False, default=True)
+
+    @hybrid_property
+    def password(self):
+        return self._password
+
+    @password.setter
+    def password(self, plain_password):
+        self._password = generate_password_hash(plain_password)
+
+    def check_password(self, plain_password):
+        return check_password_hash(self._password, plain_password)
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "email": self.email,
+            "is_active": self.is_active,
+        }
+
+
+
+
+
+
+
+
+
